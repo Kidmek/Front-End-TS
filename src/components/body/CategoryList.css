@@ -1,0 +1,18 @@
+.innerCategoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-left: 20%;
+  padding-top: 1rem;
+  border-left: 1px dashed;
+}
+
+.btnList.list {
+  position: relative;
+  left: 0;
+}
+
+.singleCategory.list {
+  margin: 0;
+  gap: 0.5rem;
+}

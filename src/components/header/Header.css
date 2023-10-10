@@ -1,0 +1,114 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 6rem;
+  z-index: 1000;
+  background-color: white;
+}
+
+.headerTitle {
+  font-weight: bolder;
+  font-size: xx-large;
+}
+.headerTitle.service {
+  font-weight: bold;
+  font-size: x-large;
+}
+.headerNumber {
+  background-color: orange;
+  padding: 0.2rem 0.3rem;
+  height: min-content;
+  font-weight: bolder;
+  font-size: smaller;
+  margin-left: 0.5rem;
+  border-radius: 0.5rem;
+  color: white;
+}
+.headerNumber.service {
+  background-color: green;
+}
+.headerLeft,
+.headerRight {
+  align-items: center;
+  display: flex;
+  height: 70%;
+}
+.headerRight {
+  gap: 1rem;
+}
+
+.zoomContainer {
+  display: flex;
+  gap: 0.1rem;
+}
+
+.headerBtn {
+  border: 0;
+  height: 100%;
+  padding: 0rem 0.6rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.textBtn {
+  background-color: blue;
+  color: white;
+  font-size: x-small;
+  font-weight: bolder;
+}
+.zoomContainer {
+  height: 100%;
+}
+
+.zoomBtn {
+  font-size: x-large;
+  padding: 0 0.8rem;
+  font-weight: bolder;
+  background: rgb(180, 179, 179);
+}
+
+.amount {
+  border: 0;
+  padding: 0 0.2rem;
+  text-align: center;
+  background: rgb(180, 179, 179);
+}
+
+.amount:focus {
+  outline: none;
+}
+
+.amount ::after {
+  content: '%';
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.iconBtn {
+  position: relative;
+  background: rgb(180, 179, 179);
+}
+
+.toolTipText {
+  visibility: hidden;
+  width: 120px;
+  background-color: gray;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px;
+  margin-top: 0.5rem;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+.iconBtn:hover .toolTipText {
+  visibility: visible;
+}

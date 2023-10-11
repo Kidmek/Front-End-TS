@@ -158,8 +158,16 @@ function CategoryList({
               <div className='addNewContainer list'>
                 <input
                   className='categoryTitle input '
-                  title='Category Name'
-                  placeholder='Category Name'
+                  title={
+                    selectedType === Type.Category
+                      ? 'Category Name'
+                      : 'Service Name'
+                  }
+                  placeholder={
+                    selectedType === Type.Category
+                      ? 'Category Name'
+                      : 'Service Name'
+                  }
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />

@@ -5,7 +5,7 @@ import Check from '/check.svg'
 import Times from '/times.svg'
 
 import { useState } from 'react'
-import { Category, Type, View } from '../../constants'
+import { Action, Category, Type, View } from '../../constants'
 import CategoryList from './CategoryList'
 
 type Props = {
@@ -33,6 +33,14 @@ type SingleCategory = {
   subCategories: Array<Category>
 }
 
+type PreviousAction = {
+  id: string
+  action: Action
+  depth: Array<number>
+  prevName: string
+  type: Type
+}
+
 const Body = ({
   scale,
   translateX,
@@ -47,13 +55,42 @@ const Body = ({
   setTotalServices,
   view,
 }: Props) => {
+  const [prevAction, setPrevAction] = useState<PreviousAction>()
   const [dragging, setDragging] = useState<boolean>(false)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
 
   const [categories, setCategories] = useState<Array<SingleCategory>>([])
-  const [title, setTitle] = useState<string>()
+  const [title, setTitle] = useState<string>('')
 
   const [addNew, setAddNew] = useState<boolean>(false)
+
+  const rollBack = () => {
+    if (prevAction) {
+      if (prevAction.action === Action.Add) {
+        handleDeleteUpdateCategory(
+          prevAction.depth,
+          prevAction.id,
+          prevAction.prevName,
+          true,
+          prevAction.type
+        )
+      } else if (prevAction.action === Action.Update) {
+        handleDeleteUpdateCategory(
+          prevAction.depth,
+          prevAction.id,
+          prevAction.prevName,
+          false,
+          prevAction.type
+        )
+      } else if (prevAction.action === Action.Delete) {
+        handleAddCategory(
+          prevAction.depth,
+          prevAction.prevName,
+          prevAction.type
+        )
+      }
+    }
+  }
 
   const findAndAlterCategory = (
     categories: Array<SingleCategory>,
@@ -71,6 +108,12 @@ const Body = ({
       } else if (isUpdate) {
         categories = categories.map((category) => {
           if (category.id === id) {
+            if (prevAction) {
+              setPrevAction({
+                ...prevAction,
+                prevName: category.name,
+              })
+            }
             category.name = name
             return category
           } else {
@@ -112,8 +155,14 @@ const Body = ({
     name: string,
     type: Type
   ) => {
-    console.log(categories)
     const newCategories = categories
+    setPrevAction({
+      action: Action.Add,
+      id: '',
+      depth,
+      prevName: name,
+      type,
+    })
 
     if (depth.length == 0) {
       newCategories.push({
@@ -147,12 +196,34 @@ const Body = ({
     type: Type
   ) => {
     let newCategories = categories
-
+    if (!isUpdate) {
+      setPrevAction({
+        action: Action.Delete,
+        id,
+        depth,
+        prevName: name,
+        type,
+      })
+    } else {
+      setPrevAction({
+        action: Action.Update,
+        id,
+        depth,
+        prevName: '',
+        type,
+      })
+    }
     if (depth.length == 1) {
       newCategories = !isUpdate
         ? newCategories.filter((category) => category.id !== id)
         : newCategories.map((category) => {
             if (category.id === id) {
+              if (prevAction) {
+                setPrevAction({
+                  ...prevAction,
+                  prevName: category.name,
+                })
+              }
               category.name = name
               return category
             } else {
@@ -230,6 +301,10 @@ const Body = ({
   }
   return (
     <div className='body' id='mainBody'>
+      <div>
+        <button onClick={rollBack}>Undo</button>
+        <button>Redo</button>
+      </div>
       <button onClick={() => handlePan('down')} className='navigateBtn up'>
         <img src={Up} className='upImg' />
       </button>

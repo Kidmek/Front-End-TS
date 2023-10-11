@@ -43,7 +43,6 @@ function App() {
       setTranslateX(centerPosition.x - 1)
       setTranslateY(centerPosition.y / 2 - 1)
       setPosition({ x: 0, y: 0 })
-      console.log(translateX, translateY)
     }
   }
 

@@ -25,7 +25,7 @@ function CategoryList({
 }: Props) {
   const [addNew, setAddNew] = useState<boolean>(false)
   const [edit, setEdit] = useState<boolean>(false)
-  const [title, setTitle] = useState<string>()
+  const [title, setTitle] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedType, setSelectedType] = useState<Type>(Type.Category)
 

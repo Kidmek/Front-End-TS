@@ -7,6 +7,12 @@ export enum View {
   List,
 }
 
+export enum Action {
+  Delete,
+  Update,
+  Add,
+}
+
 export const zoomLevels: Array<number> = [
   25, 30, 40, 50, 60, 70, 80, 90, 100, 125, 150,
 ]

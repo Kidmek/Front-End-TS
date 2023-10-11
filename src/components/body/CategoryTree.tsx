@@ -6,6 +6,8 @@ import { useState } from 'react'
 import './CategoryTree.css'
 import { Category, Type } from '../../constants'
 
+// Component Prop And State Types
+
 type Props = {
   category: Category
   showHorizontal: boolean
@@ -33,40 +35,6 @@ function CategoryTree({
   const [title, setTitle] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedType, setSelectedType] = useState<Type>(Type.Category)
-
-  // function getPositionAtCenter(element: HTMLElement | null) {
-  //   if (element) {
-  //     const { top, left, width, height } = element.getBoundingClientRect()
-  //     return {
-  //       x: left + width / 2,
-  //       y: top + height / 2,
-  //     }
-  //   } else {
-  //     return { x: 0, y: 0 }
-  //   }
-  // }
-
-  // function getDistanceBetweenElements(
-  //   a: HTMLElement | null,
-  //   b: HTMLElement | null
-  // ) {
-  //   const aPosition = getPositionAtCenter(a)
-  //   const bPosition = getPositionAtCenter(b)
-
-  //   return Math.hypot(aPosition.x - bPosition.x, aPosition.y - bPosition.y)
-  // }
-
-  //   const distance: number = getDistanceBetweenElements(
-  //     document.getElementById('x'),
-  //     document.getElementById('y')
-  //   )
-
-  //   console.log(
-  //     getDistanceBetweenElements(
-  //       document.getElementById('0'),
-  //       document.getElementById('1')
-  //     )
-  //   )
 
   return (
     <div className={`categoriesListContainer  ${!hasSiblings ? 'single' : ''}`}>

@@ -5,9 +5,10 @@ import Check from '/check.svg'
 import Times from '/times.svg'
 
 import { useState } from 'react'
-import { Action, Category, Type, View } from '../../constants'
+import { Category, Type, View } from '../../constants'
 import CategoryList from './CategoryList'
 
+// Component Prop And State Types
 type Props = {
   scale: number
   translateX: number
@@ -33,14 +34,6 @@ type SingleCategory = {
   subCategories: Array<Category>
 }
 
-type PreviousAction = {
-  id: string
-  action: Action
-  depth: Array<number>
-  prevName: string
-  type: Type
-}
-
 const Body = ({
   scale,
   translateX,
@@ -55,43 +48,20 @@ const Body = ({
   setTotalServices,
   view,
 }: Props) => {
-  const [prevAction, setPrevAction] = useState<PreviousAction>()
+  // States for knowing dragging state and position
   const [dragging, setDragging] = useState<boolean>(false)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
 
+  // Complete Categories
   const [categories, setCategories] = useState<Array<SingleCategory>>([])
+
+  // Input state
   const [title, setTitle] = useState<string>('')
 
+  // State to show/hide the input
   const [addNew, setAddNew] = useState<boolean>(false)
 
-  const rollBack = () => {
-    if (prevAction) {
-      if (prevAction.action === Action.Add) {
-        handleDeleteUpdateCategory(
-          prevAction.depth,
-          prevAction.id,
-          prevAction.prevName,
-          true,
-          prevAction.type
-        )
-      } else if (prevAction.action === Action.Update) {
-        handleDeleteUpdateCategory(
-          prevAction.depth,
-          prevAction.id,
-          prevAction.prevName,
-          false,
-          prevAction.type
-        )
-      } else if (prevAction.action === Action.Delete) {
-        handleAddCategory(
-          prevAction.depth,
-          prevAction.prevName,
-          prevAction.type
-        )
-      }
-    }
-  }
-
+  // Recursive Function Used to locate a node by depth and then add to subcategories or delete or update a category
   const findAndAlterCategory = (
     categories: Array<SingleCategory>,
     depth: Array<number>,
@@ -101,19 +71,17 @@ const Body = ({
     id: string,
     type: Type
   ) => {
+    // Base case
     if (depth.length == 1) {
+      // Delete
       if (isDelete) {
         categories = categories.filter((category) => category.id !== id)
         return categories
-      } else if (isUpdate) {
+      }
+      // Update
+      else if (isUpdate) {
         categories = categories.map((category) => {
           if (category.id === id) {
-            if (prevAction) {
-              setPrevAction({
-                ...prevAction,
-                prevName: category.name,
-              })
-            }
             category.name = name
             return category
           } else {
@@ -121,7 +89,9 @@ const Body = ({
           }
         })
         return categories
-      } else {
+      }
+      // Add
+      else {
         categories[depth[0]].subCategories.push({
           type: type,
           id: depth
@@ -132,6 +102,7 @@ const Body = ({
         })
       }
     } else {
+      // take out the first depth and find categories by it then send it back to the function finally update state
       const newDepth = depth.shift()
       if (newDepth !== undefined) {
         const res = findAndAlterCategory(
@@ -150,20 +121,15 @@ const Body = ({
     }
   }
 
+  // Handles when the add button is pressed
   const handleAddCategory = (
     depth: Array<number>,
     name: string,
     type: Type
   ) => {
     const newCategories = categories
-    setPrevAction({
-      action: Action.Add,
-      id: '',
-      depth,
-      prevName: name,
-      type,
-    })
 
+    // No Recursion required add to base categories
     if (depth.length == 0) {
       newCategories.push({
         type: type,
@@ -171,6 +137,8 @@ const Body = ({
         name: name,
         subCategories: [],
       })
+
+      // Add to total(visible in header)
       if (type === Type.Category) {
         setTotalCategories(totalCategories + 1)
       } else {
@@ -178,6 +146,7 @@ const Body = ({
       }
       setCategories(newCategories)
     } else {
+      // Start recursion
       findAndAlterCategory(newCategories, depth, name, false, false, name, type)
       if (type === Type.Category) {
         setTotalCategories(totalCategories + 1)
@@ -188,6 +157,7 @@ const Body = ({
     }
   }
 
+  //Handles when delete or update is initiated
   const handleDeleteUpdateCategory = (
     depth: Array<number>,
     id: string,
@@ -196,40 +166,21 @@ const Body = ({
     type: Type
   ) => {
     let newCategories = categories
-    if (!isUpdate) {
-      setPrevAction({
-        action: Action.Delete,
-        id,
-        depth,
-        prevName: name,
-        type,
-      })
-    } else {
-      setPrevAction({
-        action: Action.Update,
-        id,
-        depth,
-        prevName: '',
-        type,
-      })
-    }
+
+    // No recursion required first layer of elements
     if (depth.length == 1) {
       newCategories = !isUpdate
         ? newCategories.filter((category) => category.id !== id)
         : newCategories.map((category) => {
             if (category.id === id) {
-              if (prevAction) {
-                setPrevAction({
-                  ...prevAction,
-                  prevName: category.name,
-                })
-              }
               category.name = name
               return category
             } else {
               return category
             }
           })
+
+      // If delete deduce total for header
       if (!isUpdate) {
         if (type === Type.Category) {
           setTotalCategories(totalCategories - 1)
@@ -239,15 +190,18 @@ const Body = ({
       }
       setCategories(newCategories)
     } else {
+      // Recursion
       findAndAlterCategory(
         newCategories,
         depth,
         name,
         !isUpdate,
-        true,
+        isUpdate,
         id,
         type
       )
+
+      // If delete deduce total for header
       if (!isUpdate) {
         if (type === Type.Category) {
           setTotalCategories(totalCategories - 1)
@@ -259,6 +213,7 @@ const Body = ({
     }
   }
 
+  // Start the dragging
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     setDragging(true)
     setOffset({
@@ -267,10 +222,12 @@ const Body = ({
     })
   }
 
+  // Stop the dragging
   const handleMouseUp = () => {
     setDragging(false)
   }
 
+  // While dragging
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (dragging) {
       setPosition({
@@ -280,6 +237,7 @@ const Body = ({
     }
   }
 
+  // Handles panning with the four buttons on each side
   const handlePan = (direction: string) => {
     const step = 50
     switch (direction) {
@@ -301,10 +259,7 @@ const Body = ({
   }
   return (
     <div className='body' id='mainBody'>
-      <div>
-        <button onClick={rollBack}>Undo</button>
-        <button>Redo</button>
-      </div>
+      {/* The Four Panning Buttons */}
       <button onClick={() => handlePan('down')} className='navigateBtn up'>
         <img src={Up} className='upImg' />
       </button>
@@ -317,6 +272,7 @@ const Body = ({
       <button onClick={() => handlePan('right')} className='navigateBtn left'>
         <img src={Up} className='upImg' />
       </button>
+      {/*  */}
       <div
         style={{
           transform: `scale(${scale}) translate(${translateX}px, ${translateY}px)`,
@@ -348,6 +304,7 @@ const Body = ({
             </button>
           </div>
 
+          {/* If View Button is on List or View */}
           {view !== View.List ? (
             <div className='lineContainer'>
               {(categories.length > 1 ||
@@ -375,6 +332,7 @@ const Body = ({
                     />
                   )
                 })}
+                {/* New input */}
                 {addNew && (
                   <div className='lineContainer'>
                     <div className='line'></div>
@@ -428,6 +386,7 @@ const Body = ({
                   />
                 )
               })}
+              {/* New input */}
               {addNew && (
                 <div className='lineContainer'>
                   <div className='addNewContainer'>

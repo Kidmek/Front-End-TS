@@ -1,3 +1,5 @@
+// Constant Types and Enums Used
+
 export enum Type {
   Service,
   Category,
@@ -5,12 +7,6 @@ export enum Type {
 export enum View {
   Tree,
   List,
-}
-
-export enum Action {
-  Delete,
-  Update,
-  Add,
 }
 
 export const zoomLevels: Array<number> = [

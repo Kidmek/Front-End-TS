@@ -3,6 +3,8 @@ import './Header.css'
 import SendImg from '/center.png'
 import { View, zoomLevels } from '../../constants'
 
+// Component Prop And State Types
+
 type Props = {
   setScale: React.Dispatch<React.SetStateAction<number>>
   totalServices: number
@@ -19,9 +21,11 @@ const Header = ({
   view,
   setView,
 }: Props) => {
+  // State to hold the chosen zoom option
   const [zoom, setZoom] = useState<string>('100%')
   const [selectedIndex, setSelectedIndex] = useState(9)
 
+  // Handles zoom option change
   const onZoomChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setZoom(e.target.value)
     const number: number = Number(e.target.value.replace('%', ''))
@@ -30,6 +34,7 @@ const Header = ({
     }
   }
 
+  // when zoom state changes change the scale of the body
   useEffect(() => {
     zoomLevels.forEach((level, index) => {
       if (level + '%' === zoom) {
@@ -56,6 +61,7 @@ const Header = ({
         </div>
       </div>
       <div className='headerRight'>
+        {/* View change button */}
         <button
           className='headerBtn textBtn'
           onClick={() => {
@@ -64,6 +70,8 @@ const Header = ({
         >
           {view !== View.List ? 'LIST VIEW' : 'TREE VIEW'}
         </button>
+
+        {/* Center  button */}
         <button
           className='headerBtn iconBtn'
           data-tooltip='bla bla'

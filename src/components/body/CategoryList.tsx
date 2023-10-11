@@ -5,6 +5,8 @@ import Edit from '/edit.svg'
 import Times from '/times.svg'
 import './CategoryList.css'
 
+// Component Prop And State Types
+
 type Props = {
   category: Category
   depth: Array<number>
@@ -23,10 +25,15 @@ function CategoryList({
   addCategory,
   deleteUpdateCategory,
 }: Props) {
+  // State to show/hide the new input
   const [addNew, setAddNew] = useState<boolean>(false)
+  // State to show/hide the  editting input
   const [edit, setEdit] = useState<boolean>(false)
+  // Input state
   const [title, setTitle] = useState<string>('')
+  // State to show/hide the category/services option
   const [showModal, setShowModal] = useState<boolean>(false)
+  // State to know the chosen option
   const [selectedType, setSelectedType] = useState<Type>(Type.Category)
 
   return (
@@ -47,6 +54,7 @@ function CategoryList({
             onChange={(e) => setTitle(e.target.value)}
           />
         )}
+        {/* Editting button list */}
         {edit ? (
           <div className='btnList list'>
             <button
@@ -78,6 +86,7 @@ function CategoryList({
             </button>
           </div>
         ) : (
+          // Normal Button List
           <div className='btnList list'>
             {category.type !== Type.Service && (
               <button className='btn' onClick={() => setShowModal(true)}>
